@@ -1,15 +1,40 @@
 from flask import Flask ,render_template , flash , redirect , url_for, session, request, logging
 
-
+import pymysql
 from passlib.hash import pbkdf2_sha256
 from data import Articles
 from functools import wraps
 
 app = Flask(__name__)
 app.debug=True
+app.secret_key = "super secret key"
 
+db = pymysql.connect(host='localhost', 
+                        port=3306, 
+                        user='root', 
+                        passwd='1234', 
+                        db='team6')
 
+def is_logged_out(f):
+    @wraps(f)
+    def wrap(*args , **kwargs):
+        if 'is_logged' in session:
+        # if is session['is_logged']:
+            return redirect(url_for('articles'))
+        else:
+            return f(*args ,**kwargs)
+    return wrap
 
+def is_logged_in(f):
+    @wraps(f)
+    def _wraper(*args, **kwargs):
+        if 'is_logged' in session:#아래와 같은말임
+        # if session['is_logged']:#위와 같은 말임
+            return f(*args, **kwargs)
+        else:
+            flash('UnAuthorized, Please login', 'dnager')
+            return redirect(url_for('login'))
+    return _wraper
 
 
 @app.route('/')
@@ -23,6 +48,7 @@ def index():
 
 
 @app.route('/register',methods=['GET' ,'POST'])
+# @is_logged_out
 def register():
     if request.method == 'POST':
 
@@ -67,7 +93,9 @@ def register():
     else:
         return render_template('register.html')
 
+
 @app.route('/login',methods=['GET', 'POST'])
+# @is_logged_out
 def login():
     if request.method == 'POST':
         id = request.form['username']
@@ -94,8 +122,20 @@ def login():
     else:
         return render_template('login.html')
 
+@app.route('/logout')
+# @is_logged_in
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+@app.route('/graph')
+def graph():
+    list_data = [5, 10, 15, 40, 50, 15, 10,5,40]
+    return render_template('graph.html',data = list_data)
 
 if __name__ =='__main__':
     app.run(host='0.0.0.0', port='8000')
-    app.secret_key = 'hokyoung123456789'# ssession 실행시 필요한 설정이다
+    app.secret_key = 'super secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
+    # app.secret_key = 'hokyoung123456789'# ssession 실행시 필요한 설정이다
     app.run() # 서버 실행

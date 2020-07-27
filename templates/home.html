@@ -1,14 +1,17 @@
 {% extends "layouts.html" %}
 {% block body %}
     <div class="jumbotron text-center">
-    <h1 class="display-4">Flask Tutorial</h1>
-    <p class="lead">This Application is build using by python and Flask Framework</p>
+    <h1 class="display-4">Team6</h1>
+    <p class="lead">자동 태양광 패널 시스템 </p>
     {% if session['is_logged'] %}
     <h1>Welcome ! {{session['username']}}</h1>
-    {% else %}
-    <h1>Hello Guest</h1>
-    {% endif %}
     <hr class="my-4">
-    <a class="btn btn-danger btn-lg" href="register" role="button">회원가입</a>
-  </div>
+    <a class="btn btn-success btn-lg" href="graph" role="button">그래프 보기</a>
+    <a class="btn btn-dark btn-lg" href="/logout" role="button">LogOut</a>
+    {% else %}
+    <h1>로그인을 해주세요</h1>
+    <hr class="my-4">
+    <a class="btn btn-danger btn-lg" href="login" role="button">로그인</a>
+    <a class="btn btn-primary btn-lg" href="register" role="button">회원가입</a>
+    {% endif %}
 {% endblock %}

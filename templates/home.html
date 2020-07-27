@@ -1,0 +1,14 @@
+{% extends "layouts.html" %}
+{% block body %}
+    <div class="jumbotron text-center">
+    <h1 class="display-4">Flask Tutorial</h1>
+    <p class="lead">This Application is build using by python and Flask Framework</p>
+    {% if session['is_logged'] %}
+    <h1>Welcome ! {{session['username']}}</h1>
+    {% else %}
+    <h1>Hello Guest</h1>
+    {% endif %}
+    <hr class="my-4">
+    <a class="btn btn-danger btn-lg" href="register" role="button">회원가입</a>
+  </div>
+{% endblock %}

@@ -1,17 +1,29 @@
 {% extends "layouts.html" %}
 {% block body %}
+
+
+    <div class="row align-items-center">
+    <div class="col-md-6 col-lg-6">
+        <img src="static/vendors/images/factory.gif" alt="">
+    </div>
+
     <div class="jumbotron text-center">
     <h1 class="display-4">Team6</h1>
     <p class="lead">자동 태양광 패널 시스템 </p>
     {% if session['is_logged'] %}
-    <h1>Welcome ! {{session['username']}}</h1>
+    <h1>{{session['username']}}님 안녕하세요</h1>
     <hr class="my-4">
-    <a class="btn btn-success btn-lg" href="graph" role="button">그래프 보기</a>
-    <a class="btn btn-dark btn-lg" href="/logout" role="button">LogOut</a>
+    <a class="btn btn-outline-secondary btn-lg" href="graph" role="button">그래프 보기</a>
+    <a class="btn btn-outline-dark btn-lg" href="/logout" role="button">로그아웃</a> 
+    
+    
+    
+    
+    
     {% else %}
     <h1>로그인을 해주세요</h1>
     <hr class="my-4">
-    <a class="btn btn-danger btn-lg" href="login" role="button">로그인</a>
-    <a class="btn btn-primary btn-lg" href="register" role="button">회원가입</a>
+    <a class="btn btn-outline-dark btn-lg" href="login" role="button">로그인</a>
+    <a class="btn btn-outline-secondary btn-lg" href="register" role="button">회원가입</a>
     {% endif %}
 {% endblock %}

@@ -38,6 +38,7 @@ def is_logged_in(f):
 
 
 @app.route('/')
+@is_logged_in
 def index():
     print("Success")
     # session['test'] = "Hokyoung Kim"
@@ -48,7 +49,7 @@ def index():
 
 
 @app.route('/register',methods=['GET' ,'POST'])
-# @is_logged_out
+@is_logged_out
 def register():
     if request.method == 'POST':
 
@@ -95,7 +96,7 @@ def register():
 
 
 @app.route('/login',methods=['GET', 'POST'])
-# @is_logged_out
+@is_logged_out
 def login():
     if request.method == 'POST':
         id = request.form['username']
@@ -114,6 +115,7 @@ def login():
             if pbkdf2_sha256.verify(pw,users[4] ):
                 session['is_logged'] = True
                 session['username'] = users[3]
+                session['id'] = users[0]
                 print(session)
                 return redirect('/')
             else:
@@ -123,15 +125,28 @@ def login():
         return render_template('login.html')
 
 @app.route('/logout')
-# @is_logged_in
+@is_logged_in
 def logout():
     session.clear()
     return redirect(url_for('login'))
 
 @app.route('/graph')
+@is_logged_in
 def graph():
     list_data = [5, 10, 15, 40, 50, 15, 10,5,40]
     return render_template('graph.html',data = list_data)
+
+@app.route('/delete/<string:id>',methods = ['POST'])
+@is_logged_in
+def delete(id):
+   cursur = db.cursor()
+   sql = 'DELETE FROM `users` WHERE  `id`=%s;'
+   session.clear()
+   cursur.execute(sql,[id])
+   db.commit()
+   return redirect('/')
+
+
 
 if __name__ =='__main__':
     app.run(host='0.0.0.0', port='8000')

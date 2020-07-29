@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     {% if session['is_logged'] %}
-    <a class="navbar-brand" href="/">Welcome !{{session['username']}}</a>
+    <a class="navbar-brand" href="/">{{session['username']}}님 (로그인)</a>
     {% else %}
     <a class="navbar-brand" href="/">Team6</a>
     {% endif %}
@@ -9,7 +9,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <div>
-
+        {% if session['is_logged'] %}
         <ul class="navbar-nav">
           <li class="nav-item active">
             <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
@@ -19,18 +19,32 @@
           <a class="nav-link" href="/about">About</a>
         </li> -->
         <li class="nav-item">
+          <a class="nav-link" href="/graph">Graph</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="/logout">LogOut</a>
         </li>
+        <li class="nav-item">
+          <form action="/delete/{{session['id']}}" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?')"><button type="submit" class="btn btn-outline-danger">회원탈퇴</button></form>
+        </li>
+        
         <!-- <li class="nav-item">
           <a class="nav-link" href="/articles">Articles</a>
         </li> -->
+        {% else %}
         <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="/login">LogIn</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/register">Register</a>
-        </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">LogIn</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Register</a>
+          </li>
+
+        {% endif %}
+          
     
       </ul>
       </ul>

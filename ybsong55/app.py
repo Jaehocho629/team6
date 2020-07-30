@@ -13,6 +13,19 @@ db = pymysql.connect(host='localhost',
                         passwd='1234', 
                         db='myflaskapp')
 
+
+# def data_for_monitor(f):
+#     @wraps(f)
+#     def wrap(*args , **kwargs):
+#         cursor = db.cursor()
+#         sql='SELECT * FROM solar_{};'.format(session['id'])
+#         cursor.execute(sql)
+#         data = cursor.fetchall()
+#         print(data)
+#         return data 
+#     return wrap
+
+
 @app.route('/')
 def main_page():
     return render_template('main_page.html')
@@ -26,8 +39,6 @@ def login():
     if request.method == 'POST':
         id = request.form['email']
         pw = request.form.get('password')
-        print([id])
- 
         sql='SELECT * FROM users WHERE email = %s'
         cursor  = db.cursor()
         cursor.execute(sql, [id])
@@ -38,6 +49,7 @@ def login():
             if pbkdf2_sha256.verify(pw,users[4] ):
                 session['is_logged'] = True
                 session['username'] = users[3]
+                session['id'] = users[0]
                 print(session)
                 return redirect(url_for('main_page'))
             else:
@@ -45,23 +57,89 @@ def login():
     else:
         return render_template('login.html')
 
-
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login'))
 
-@app.route('/register')
+@app.route('/register', methods=['POST','GET'])
 def register():
-    return render_template('register.html')
+    if request.method == 'POST':
+        # data = request.body.get('author')
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = pbkdf2_sha256.hash(request.form.get('password'))
+        re_password = request.form.get('re_password')
+        username = request.form.get('username')
+        # name = form.name.data
+        cursor = db.cursor()
+        sql = "SELECT username FROM users WHERE username =%s"
+        cursor.execute(sql,[username])
+        exist  = cursor.fetchone()
+        if exist :
+            return redirect(url_for('register'))
+        else:
+            if(pbkdf2_sha256.verify(re_password,password)):
 
-@app.route('/graph')
-def graph():
-    return render_template('graph.html')
+                sql = '''
+                    INSERT INTO users (name , email , username , password) 
+                    VALUES (%s ,%s, %s, %s)
+                '''
+                cursor.execute(sql , (name,email,username,password))
+                db.commit()
+
+                sql_find_Serial_num = "SELECT id FROM users WHERE username =%s"
+                cursor.execute(sql_find_Serial_num,[username])
+                db.commit()
+                sol_num = cursor.fetchone()
+                print(int(sol_num[0]))
+
+                sql_for_newtable = '''
+                    CREATE TABLE `myflaskapp`.`solar_%s` (
+                    `data_num` INT NOT NULL AUTO_INCREMENT,
+                    `Lux` INT NULL,
+                    `Temp` INT NULL,
+                    `Humid` INT NULL,
+                    `Time` DATETIME NULL,
+                    PRIMARY KEY (`data_num`));
+                '''
+                cursor.execute(sql_for_newtable,[int(sol_num[0])])
+                db.commit()
+                return redirect(url_for('login'))
+            else:
+                return "Invalid Password"
+        db.close()
+    else:
+        return render_template('register.html')
+
 
 @app.route('/monitor')
+# @data_for_monitor
 def monitor():
-    return render_template('monitor.html')
+    cursor = db.cursor()
+    sql='SELECT * FROM solar_{};'.format(session['id'])
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    print(data)
+    return render_template('monitor.html', m_data= data)
+@app.route('/monitor1')
+# @data_for_monitor
+def monitor1():
+    cursor = db.cursor()
+    sql='SELECT * FROM solar_{};'.format(session['id'])
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    print(data)
+    return render_template('monitor1.html',m_data= data)
+@app.route('/monitor2')
+# @data_for_monitor
+def monitor2():
+    cursor = db.cursor()
+    sql='SELECT * FROM solar_{};'.format(session['id'])
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    print(data)
+    return render_template('monitor2.html',m_data= data)
 
 @app.route('/analysis')
 def analysis():

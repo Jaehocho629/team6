@@ -13,15 +13,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> 
     </head> 
     
-<body>
+<body> 
     <div class ="text-center">
         <p> <br> </p>
-        <h1>  Monitoring Lux  </h1>
+        <h1>  Monitoring Temperature  </h1>
         </div>
-    <p><br><br></p> 
+    <p><br><br></p>
     <div>
-            <div class ="text-center">
-            <a class="btn btn-dark btn-lg" href="/monitor" role="button".> 업데이트 </a>
+        <div class ="text-center">
+            <a class="btn btn-dark btn-lg" href="/monitor2" role="button"> 업데이트 </a>
                 </div>
     </div>
     <p><br></p>
@@ -51,10 +51,9 @@
             // 챠트를 그릴 데이타 
             data: { labels: ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24'], 
             datasets: [{ 
-                label: '조도', 
+                label: '온도', 
                 backgroundColor: 'transparent', 
-                borderColor: 'Orange',
-                data: [1,2,5,6,8,7,8,8,9,2]
+                borderColor: 'Red', data: m_data[3]
                 }] 
             }, 
             // 옵션 
@@ -66,11 +65,10 @@
                     <a class="btn btn-outline-primary" href="/monitor1" role="button"> 습도 </a>
                     <a class="btn btn-outline-danger" href="/monitor2" role="button"> 온도 </a>
                 </div>
-                    
             </div>
         </body> 
     <body>
-        <p><br><br><br><br></p>
+        <p><br><br><br></p>
         <div class="jumbotron text-center">
             <h1 class="display-4">실시간 측정 데이터 표</h1>
             <!-- <p class="lead">실시간 측정 데이터 표</p> -->
@@ -94,15 +92,14 @@
                                     <th>Time</th>
                                 </tr>
                             </thead>
-                            
                             <tbody>
-                              {% for i in m_data %}
+                                {% for i in m_data[0] %}
                                 <tr>
                                   <th scope="row">{{i[0]}}</th>
                                   <td>{{ i[1] }}</td>
                                   <td>{{ i[2] }}</td>
                                   <td>{{ i[3] }}</td>
-                                  
+                                  <td>{{i[4]}}</td>
                                 </tr>
                             {% endfor %}
                               </tbody>

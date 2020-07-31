@@ -13,21 +13,39 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script> 
     </head> 
     
-<body> 
+<body>
     <div class ="text-center">
         <p> <br> </p>
-        <h1>  Monitoring Hummit  </h1>
+        <h1>  Monitoring Humidity  </h1>
         </div>
-    <p><br><br></p>
+    <p><br><br></p> 
     <div>
-        <div class ="text-center">
-            <a class="btn btn-dark btn-lg" href="/monitor1" role="button"> 업데이트 </a>
+        <form method="POST" action="/monitor" onsubmit="return confirm('업데이트 하시겠습니까?')">
+            <div class="select-role">
+                <div class = 'text-center'>
+                    <select date="date">
+                        <option value="">날짜 선택</option>
+                        <option value="2020-08-30">2020-08-30</option>
+                        <option value="2020-08-29">2020-08-29</option>
+                        <option value="2020-08-28">2020-08-28</option>
+                    </select>
                 </div>
+                <p><br><br></p>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                </div>
+                <div class="input-group mb-0">
+                    <input type="submit" class="btn btn-warning btn-lg btn-block" value="업데이트">
+                </div>
+            </div>
+            </form>
+            <!-- <div class ="text-center">
+            <a class="btn btn-dark btn-lg" href="/monitor" role="button".> 업데이트 </a>
+                </div> -->
     </div>
     <p><br></p>
     <div class="container"> 
         <canvas id="myChart"></canvas> 
-    </div> 
+    </div>  
     
     <!-- 부트스트랩 --> 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
@@ -53,7 +71,7 @@
             datasets: [{ 
                 label: '습도', 
                 backgroundColor: 'transparent', 
-                borderColor: 'Blue', data: m_data[2]
+                borderColor: 'Blue', data: {{humid_data}}
                 }] 
             }, 
             // 옵션 
@@ -88,21 +106,25 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Serial_number</th>
+                                    <th>User_id</th>
                                     <th>Lux</th>
                                     <th>Temperature</th>
                                     <th>Humidity</th>
+                                    <th>Date</th>
                                     <th>Time</th>
                                 </tr>
                             </thead>
+                            
                             <tbody>
-                                {% for i in m_data[0] %}
+                              {% for i in m_data %}
                                 <tr>
-                                  <th scope="row">{{i[0]}}</th>
+                                  <th scope="row">{{i[6]}}</th>
                                   <td>{{ i[1] }}</td>
                                   <td>{{ i[2] }}</td>
                                   <td>{{ i[3] }}</td>
-                                  <td>{{i[4]}}</td>
+                                  <td>{{ i[4] }}</td>
+                                  <td>{{ i[5] }}</td>
+                                  
                                 </tr>
                             {% endfor %}
                               </tbody>

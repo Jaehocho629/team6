@@ -2,6 +2,7 @@ from flask import Flask ,render_template , flash , redirect , url_for, session, 
 from functools import wraps
 import pymysql
 from passlib.hash import pbkdf2_sha256
+from bs4 import BeautifulSoup
 
 
 app = Flask(__name__)
@@ -43,6 +44,7 @@ def login():
         cursor  = db.cursor()
         cursor.execute(sql, [id])
         users = cursor.fetchone()
+        print(users)
         if users ==None:
             return redirect(url_for('login'))
         else:
@@ -88,23 +90,6 @@ def register():
                 cursor.execute(sql , (name,email,username,password))
                 db.commit()
 
-                sql_find_Serial_num = "SELECT id FROM users WHERE username =%s"
-                cursor.execute(sql_find_Serial_num,[username])
-                db.commit()
-                sol_num = cursor.fetchone()
-                print(int(sol_num[0]))
-
-                sql_for_newtable = '''
-                    CREATE TABLE `myflaskapp`.`solar_%s` (
-                    `data_num` INT NOT NULL AUTO_INCREMENT,
-                    `Lux` INT NULL,
-                    `Temp` INT NULL,
-                    `Humid` INT NULL,
-                    `Time` DATETIME NULL,
-                    PRIMARY KEY (`data_num`));
-                '''
-                cursor.execute(sql_for_newtable,[int(sol_num[0])])
-                db.commit()
                 return redirect(url_for('login'))
             else:
                 return "Invalid Password"
@@ -113,33 +98,56 @@ def register():
         return render_template('register.html')
 
 
-@app.route('/monitor')
+@app.route('/monitor',methods=['POST','GET'])
 # @data_for_monitor
 def monitor():
-    cursor = db.cursor()
-    sql='SELECT * FROM solar_{};'.format(session['id'])
-    cursor.execute(sql)
-    data = cursor.fetchall()
-    print(data)
-    return render_template('monitor.html', m_data= data)
-@app.route('/monitor1')
+    if request.method=='POST':
+        cursor = db.cursor()
+        sql='SELECT * FROM monitoring_data where user_id =%s and Date_date = %s ORDER BY Time;'
+        ##선택박스로 얻어온 날짜 데이터 설정 해서 렌더 탬플릿에 인자로 넣어주기
+        date_data = "2020-08-29"
+        cursor.execute(sql,[session['id'],date_data])
+        data = cursor.fetchall()
+        lux_data = []
+        for i in range(len(data)):
+            lux_data.append(data[i][1])
+        return render_template('monitor.html', m_data= data, lux_data=lux_data)
+    else:
+        return render_template('monitor.html')
+@app.route('/monitor1',methods=['POST','GET'])
 # @data_for_monitor
 def monitor1():
-    cursor = db.cursor()
-    sql='SELECT * FROM solar_{};'.format(session['id'])
-    cursor.execute(sql)
-    data = cursor.fetchall()
-    print(data)
-    return render_template('monitor1.html',m_data= data)
-@app.route('/monitor2')
+    if request.method=='POST':
+        cursor = db.cursor()
+        sql='SELECT * FROM monitoring_data where user_id =%s and Date_date = %s ORDER BY Time;'
+        ##선택박스로 얻어온 날짜 데이터 설정 해서 렌더 탬플릿에 인자로 넣어주기
+        date_data = "2020-08-29"
+        cursor.execute(sql,[session['id'],date_data])
+        data = cursor.fetchall()
+        humid_data = []
+        for i in range(len(data)):
+            humid_data.append(data[i][2])
+        return render_template('monitor1.html', m_data= data,humid_data=humid_data)
+    else:
+        return render_template('monitor1.html')
+
+@app.route('/monitor2',methods=['POST','GET'])
 # @data_for_monitor
 def monitor2():
-    cursor = db.cursor()
-    sql='SELECT * FROM solar_{};'.format(session['id'])
-    cursor.execute(sql)
-    data = cursor.fetchall()
-    print(data)
-    return render_template('monitor2.html',m_data= data)
+    if request.method=='POST':
+        cursor = db.cursor()
+        sql='SELECT * FROM monitoring_data where user_id =%s and Date_date = %s ORDER BY Time;'
+        ##선택박스로 얻어온 날짜 데이터 설정 해서 렌더 탬플릿에 인자로 넣어주기
+        date_data = "2020-08-29"
+        cursor.execute(sql,[session['id'],date_data])
+        data = cursor.fetchall()
+        print(data)
+        temp_data = []
+        for i in range(len(data)):
+            temp_data.append(data[i][3])
+        return render_template('monitor2.html',m_data= data,temp_data=temp_data)
+    else:
+        return render_template('monitor2.html')
 
 @app.route('/analysis')
 def analysis():

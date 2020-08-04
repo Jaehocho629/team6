@@ -101,12 +101,16 @@ def register():
 @app.route('/monitor',methods=['POST','GET'])
 # @data_for_monitor
 def monitor():
+    # if request.method=='GET':
+    #     select = request.form.get('date')
+    #     session['date'] = select
+    #     print(select)
     if request.method=='POST':
         cursor = db.cursor()
         sql='SELECT * FROM monitoring_data where user_id =%s and Date_date = %s ORDER BY Time;'
-        ##선택박스로 얻어온 날짜 데이터 설정 해서 렌더 탬플릿에 인자로 넣어주기
-        date_data = "2020-08-29"
-        cursor.execute(sql,[session['id'],date_data])
+        select = request.form.get('date')
+        session['date']=select
+        cursor.execute(sql,[session['id'],session['date']])
         data = cursor.fetchall()
         lux_data = []
         for i in range(len(data)):
@@ -120,9 +124,9 @@ def monitor1():
     if request.method=='POST':
         cursor = db.cursor()
         sql='SELECT * FROM monitoring_data where user_id =%s and Date_date = %s ORDER BY Time;'
-        ##선택박스로 얻어온 날짜 데이터 설정 해서 렌더 탬플릿에 인자로 넣어주기
-        date_data = "2020-08-29"
-        cursor.execute(sql,[session['id'],date_data])
+        select = request.form.get('date')
+        session['date']=select
+        cursor.execute(sql,[session['id'],session['date']])
         data = cursor.fetchall()
         humid_data = []
         for i in range(len(data)):
@@ -137,11 +141,10 @@ def monitor2():
     if request.method=='POST':
         cursor = db.cursor()
         sql='SELECT * FROM monitoring_data where user_id =%s and Date_date = %s ORDER BY Time;'
-        ##선택박스로 얻어온 날짜 데이터 설정 해서 렌더 탬플릿에 인자로 넣어주기
-        date_data = "2020-08-29"
-        cursor.execute(sql,[session['id'],date_data])
+        select = request.form.get('date')
+        session['date']=select
+        cursor.execute(sql,[session['id'],session['date']])
         data = cursor.fetchall()
-        print(data)
         temp_data = []
         for i in range(len(data)):
             temp_data.append(data[i][3])

@@ -16,19 +16,25 @@
 <body>
     <div class ="text-center">
         <p> <br> </p>
-        <h1>  Monitoring Lux  </h1>
+        <h1 aria-setsize="1">  Monitoring Lux for {{session['username']}}  </h1>
+        <p><br></p>
+        <h1>  {{session['date']}} data </h1>
         </div>
     <p><br><br></p> 
     <div>
-        <form method="POST" action="/monitor" onsubmit="return confirm('업데이트 하시겠습니까?')">
+        <div class ="text-center">
+            <a class="btn btn-outline-warning" href="/monitor" role="button"> 조도 </a>
+            <a class="btn btn-outline-primary" href="/monitor1" role="button"> 습도 </a>
+            <a class="btn btn-outline-danger" href="/monitor2" role="button"> 온도 </a>
+        </div>
+        <p><br></p>
+    </div>
+    <div>
+        
+        <form method="POST" action="" onsubmit="return confirm('업데이트 하시겠습니까?')">
             <div class="select-role">
                 <div class = 'text-center'>
-                    <select date="date">
-                        <option value="">날짜 선택</option>
-                        <option value="2020-08-30">2020-08-30</option>
-                        <option value="2020-08-29">2020-08-29</option>
-                        <option value="2020-08-28">2020-08-28</option>
-                    </select>
+                        <input type="date" name="date">
                 </div>
                 <p><br><br></p>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -78,21 +84,14 @@
             // 옵션 
             options: {} }); 
             </script> 
-            <div>
-                <div class ="text-center">
-                    <a class="btn btn-outline-warning" href="/monitor" role="button"> 조도 </a>
-                    <a class="btn btn-outline-primary" href="/monitor1" role="button"> 습도 </a>
-                    <a class="btn btn-outline-danger" href="/monitor2" role="button"> 온도 </a>
-                </div>
-                    
-            </div>
         </body> 
     <body>
-        <p><br><br><br><br></p>
+        <p><br><br></p>
         <div class="jumbotron text-center">
             <h1 class="display-4">실시간 측정 데이터 표</h1>
             <!-- <p class="lead">실시간 측정 데이터 표</p> -->
-            <h1>{{session['user_name']}}</h1>
+            <p><br></p>
+            <h1>{{session['username']}}</h1>
             <hr class="my-4">
              
               <div class="card mb-4">
